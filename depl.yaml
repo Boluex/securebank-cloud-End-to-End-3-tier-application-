@@ -45,23 +45,23 @@ spec:
             - name: db-data
               mountPath: /var/lib/postgresql/data
       
-      readinessProbe:
-        tcpSocket:
-          port: 5432
-        initialDelaySeconds: 5
-        periodSeconds: 5
-      livenessProbe:
-        tcpSocket:
-          port: 5432
-        initialDelaySeconds: 10
-        periodSeconds: 10
-      resources:
-        requests:
-          memory: "64Mi"
-          cpu: "256Mi"
-        limits:
-          memory: "128Mi"
-          cpu: "512Mi"
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "256Mi"
+            limits:
+              memory: "128Mi"
+              cpu: "512Mi"
 
   volumeClaimTemplates:
     - metadata:
@@ -101,24 +101,24 @@ spec:
                  name: securebank-config
                  key: DATABASE_URL
 
-      readinessProbe:
-        tcpSocket:
-          port: 80
-        initialDelaySeconds: 5
-        periodSeconds: 5
-      livenessProbe:
-        httpGet:
-          path: /health
-          port: 80
-        initialDelaySeconds: 10
-        periodSeconds: 10
-      resources:
-        requests:
-          memory: "64Mi"
-          cpu: "256Mi"
-        limits:
-          memory: "128Mi"
-          cpu: "512Mi" 
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m" 
              
 
 
