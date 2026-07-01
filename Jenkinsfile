@@ -42,7 +42,7 @@ pipeline {
                             sh "git config user.name 'Boluex'"
                             sh "git add depl.yaml"
                             sh "git commit -m 'chore: update image tags to version ${params.IMAGE_TAG} [skip ci]'"
-                            sh "git push"
+                            sh "git push -u origin master"
                         }
                     } else {
                         echo "No changes detected. Skipping git push."
