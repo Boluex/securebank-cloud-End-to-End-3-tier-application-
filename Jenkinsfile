@@ -21,10 +21,10 @@ pipeline {
             steps {
                 script {
                     echo "Updating backend image tag to: ${params.IMAGE_TAG}"
-                    sh "sed -i -E 's|image: (securebank-be-1|boluex/securebank-backend:.*)|image: boluex/securebank-backend:${params.IMAGE_TAG}|' depl.yaml"
+                    sh "sed -i -E 's#image: (securebank-be-1|boluex/securebank-backend:.*)#image: boluex/securebank-backend:${params.IMAGE_TAG}#' depl.yaml"
 
                     echo "Updating frontend image tag to: ${params.IMAGE_TAG}"
-                    sh "sed -i -E 's|image: (securebank-fe-1|boluex/securebank-frontend:.*)|image: boluex/securebank-frontend:${params.IMAGE_TAG}|' depl.yaml"
+                    sh "sed -i -E 's#image: (securebank-fe-1|boluex/securebank-frontend:.*)#image: boluex/securebank-frontend:${params.IMAGE_TAG}#' depl.yaml"
 
                     sh "git diff depl.yaml"
                 }
