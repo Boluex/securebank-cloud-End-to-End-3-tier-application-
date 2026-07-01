@@ -38,6 +38,8 @@ pipeline {
                     if (status != "") {
                         echo "Changes detected, committing and pushing..."
                         withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDS_ID}", usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                            sh "git config user.email 'awomewekolawole1@gmail.com'"
+                            sh "git config user.name 'Boluex'"
                             sh "git add depl.yaml"
                             sh "git commit -m 'chore: update image tags to version ${params.IMAGE_TAG} [skip ci]'"
                             sh "git push"
