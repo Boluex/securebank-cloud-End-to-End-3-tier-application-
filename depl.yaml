@@ -10,12 +10,14 @@ kind: PersistentVolume
 metadata:
   name: db-data
 spec:
-  storageClassName: "gp3"
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+  storageClassName: "gp3"
+  hostPath:
+    path: "/tmp/db-data"
 
 ---
 apiVersion: apps/v1
@@ -39,8 +41,8 @@ spec:
           ports:
             - containerPort: 5432
           envFrom:
-            secretKeyRef:
-              name: securebanksecret
+            - secretRef:
+                name: securebank-secret
           volumeMounts:
             - name: db-data
               mountPath: /var/lib/postgresql/data
@@ -96,10 +98,11 @@ spec:
           ports:
             - containerPort: 80
           env:
-             valueFrom:
-               configMapKeyRef:
-                 name: securebank-config
-                 key: DATABASE_URL
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: securebank-config
+                  key: DATABASE_URL
 
           readinessProbe:
             tcpSocket:

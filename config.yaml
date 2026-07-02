@@ -15,7 +15,7 @@ metadata:
   name: securebank-secret
   namespace: securebank
 type: Opaque
-data:
+stringData:
   POSTGRES_USER: securebank
   POSTGRES_PASSWORD: c2VjdXJlYmFuaw==
   POSTGRES_DB: securebank
