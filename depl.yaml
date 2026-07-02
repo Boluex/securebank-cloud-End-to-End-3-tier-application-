@@ -92,7 +92,7 @@ spec:
     spec:
       containers:
         - name: securebank-be
-          image: securebank-be-1
+          image: boluex/securebank-backend:15
           ports:
             - containerPort: 80
           env:
@@ -140,6 +140,6 @@ spec:
     spec:
       containers:
         - name: securebank-fe
-          image: securebank-fe-1
+          image: boluex/securebank-frontend:15
           ports:
             - containerPort: 80
