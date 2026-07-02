@@ -42,7 +42,7 @@ pipeline {
                             sh "git config user.name 'Boluex'"
                             sh "git add depl.yaml"
                             sh "git commit -m 'chore: update image tags to version ${params.IMAGE_TAG} [skip ci]'"
-                            sh "git push -u origin master"
+                            sh "git push -u https://${GIT_USER}:${GIT_TOKEN}@github.com/Boluex/securebank-cloud-End-to-End-3-tier-application-.git master"
                         }
                     } else {
                         echo "No changes detected. Skipping git push."
