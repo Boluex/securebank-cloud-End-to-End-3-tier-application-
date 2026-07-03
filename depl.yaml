@@ -131,6 +131,8 @@ kind: Deployment
 metadata:
   name: securebank-fe
   namespace: securebank
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
 spec:
   replicas: 2
   selector:
