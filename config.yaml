@@ -5,8 +5,11 @@ metadata:
   namespace: securebank
 data:
   DB_PORT: "5432"
-  DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
-  
+  # NOTE: DATABASE_URL is now assembled in the backend Deployment via
+  # Kubernetes $(VAR) dependent-env expansion from the POSTGRES_* secret
+  # values. ConfigMaps do NOT perform ${...} shell substitution, which is
+  # why the previous literal value reached the app unexpanded.
+
 
 ---
 apiVersion: v1
@@ -20,6 +23,12 @@ stringData:
   POSTGRES_PASSWORD: c2VjdXJlYmFuaw==
   POSTGRES_DB: securebank
   POSTGRES_HOST: securebank-db
+  POSTGRES_PORT: "5432"
+  # Required by the backend application (app/config.py Settings).
+  # SECRET_KEY: general app secret. ENCRYPTION_KEY: valid Fernet key
+  # (32 url-safe base64 bytes) used to encrypt account balances at rest.
+  SECRET_KEY: hO26laveYaIAZ0W42t0iyazc4dLdum52FWKxu9G1bIyYxxxMyr8uiQKhYPil3RZz
+  ENCRYPTION_KEY: ZBj_5KFmp9malt19bHMt9fWkjyYvYw66DMmccatdK4I=
 
 ---
 apiVersion: v1
