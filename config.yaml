@@ -20,3 +20,13 @@ stringData:
   POSTGRES_PASSWORD: c2VjdXJlYmFuaw==
   POSTGRES_DB: securebank
   POSTGRES_HOST: securebank-db
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alertmanager-slack-secret
+  namespace: monitoring
+type: Opaque
+stringData:
+  slack_api_url: aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDA0UjE3WkgwOTQvQjBCRjBSUDRXSFgvd3JDMWpFTm1BTWxtMFF6NGhkYjZaYXQ0

@@ -1,0 +1,138 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: securebank-rules
+  namespace: securebank
+spec:
+  groups:
+    - name: securebank.rules
+      rules:
+        - alert: SecureBankHighErrorRate
+          expr: >
+            sum(rate(http_requests_total{namespace="securebank", code=~"[5-9][0-9]{2}"}[5m]))
+            /
+            sum(rate(http_requests_total{namespace="securebank"}[5m]))
+            * 100 > 5
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High error rate detected in SecureBank backend"
+            description: "The error rate has exceeded 5% over the last 5 minutes. Check the SecureBank backend for issues."
+        
+        - alert: HighCpuUsage
+          expr: >
+            sum(rate(container_cpu_usage_seconds_total{namespace="securebank"}[5m]))
+            / sum(machine_cpu_cores) * 100 > 80
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High CPU usage detected in SecureBank backend"
+            description: "The CPU usage has exceeded 80% over the last 5 minutes. Check the SecureBank backend for issues."
+
+        - alert: HighMemoryUsage
+          expr: >
+            sum(container_memory_usage_bytes{namespace="securebank"})
+            / sum(machine_memory_bytes) * 100 > 80
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High Memory usage detected in SecureBank backend"
+            description: "The Memory usage has exceeded 80% over the last 5 minutes. Check the SecureBank backend for issues."
+
+        - alert: DBDown
+          expr: >
+            securebank_db_up == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Database is down"
+            description: "The database is down. Check the database for issues."
+
+        - alert: FrontendDown
+          expr: >
+            kube_deployment_status_replicas_available{
+              namespace="securebank",
+              deployment="securebank-fe"
+            } == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Frontend is down"
+            description: "The frontend is down. Check the frontend for issues."
+
+        - alert: BackendDown
+          expr: >
+            kube_deployment_status_replicas_available{
+              namespace="securebank",
+              deployment="securebank-be"
+            } == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Backend is down"
+            description: "The backend is down. Check the backend for issues."
+
+        - alert: HighLatency
+          expr: >
+            histogram_quantile(0.95,
+              sum(rate(http_request_duration_seconds_bucket{namespace="securebank"}[5m]))
+              by (le)
+            ) > 0.5
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High latency detected in SecureBank backend"
+            description: "The latency has exceeded 0.5 seconds over the last 5 minutes. Check the SecureBank backend for issues."
+
+
+
+        - alert: NodeDown
+          expr: up{job="node-exporter"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Node is down"
+            description: "The node is down. Check the node for issues."
+
+        - alert: HighDiskUsage
+          expr: >
+            (sum(node_filesystem_size_bytes{mountpoint="/"})
+            - sum(node_filesystem_free_bytes{mountpoint="/"}))
+            / sum(node_filesystem_size_bytes{mountpoint="/"}) * 100 > 80
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High Disk usage detected in SecureBank backend"
+            description: "The Disk usage has exceeded 80% over the last 5 minutes. Check the SecureBank backend for issues."
+
+        - alert: HighNetworkUsage
+          expr: >
+            sum(rate(http_requests_total{namespace="securebank"}[5m])) > 100
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High Network usage detected in SecureBank backend"
+            description: "The Network usage has exceeded 80% over the last 5 minutes. Check the SecureBank backend for issues."
+
+        - alert: HighRateOfRequests
+          expr: >
+            sum(rate(http_requests_total{namespace="securebank"}[5m]))
+            / sum(machine_cpu_cores{mode="idle"}) * 100 > 80
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High Rate of Requests detected in SecureBank backend"
+            description: "The Rate of Requests has exceeded 80% over the last 5 minutes. Check the SecureBank backend for issues."
+
+   

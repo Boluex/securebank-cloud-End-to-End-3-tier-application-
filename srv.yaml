@@ -35,7 +35,7 @@ metadata:
   namespace: securebank
 spec:
   selector:
-    app: securebank
+    app: securebank-fe
   ports:
     - port: 80
       targetPort: 80
