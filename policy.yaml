@@ -1,0 +1,95 @@
+apiVersion: kyverno.io/v1
+kind: Policy
+metadata:
+  name: no-latest-image-tag
+spec:
+  validationFailureAction: Enforce
+  rules:
+  - name: require-no-latest-tag
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "No latest image tag is allowed"
+      pattern:
+        spec:
+          containers:
+          - image: "!*:latest"
+
+
+  - name: container-must-have-resource-limits-and-requests
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Container must have resource limits and requests"
+      pattern:
+        spec:
+          containers:
+          - resources:
+              limits:
+                cpu: "*"
+                memory: "*"
+
+  - name: no-privileged-containers-allowed
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Privileged containers are not allowed"
+      deny:
+        conditions:
+          any:
+          - key: "{{ request.object.spec.containers[].securityContext.privileged | contains(@, true) }}"
+            operator: Equals
+            value: true
+
+  - name: require-labels
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Pod must have labels"
+      pattern:
+        metadata:
+          labels:
+            app: "?*"
+            version: "?*"
+            environment: "?*"
+  
+  - name: container-must-not-run-as-root
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Container must not run as root"
+      pattern:
+        spec:
+          containers:
+          - securityContext:
+              runAsUser: "!0"
+
+  - name: disallow-host-network-and-hostpid
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Host network and hostPID are not allowed"
+      pattern:
+        spec:
+          hostNetwork: false
+          hostPID: false
+  
+    
